@@ -58,19 +58,31 @@ function App() {
 
   const arcsN = {
     subArcs: [
-      { limit: 10, label: "Low Nitrogen", color: "#FF0000" }, // Adjust labels and limits based on your data
-      { limit: 50, label: "Medium Nitrogen", color: "#FFA500" },
-      { limit: 100, label: "Optimal Nitrogen", color: "#00FF00" },
-      { limit: 200, label: "High Nitrogen", color: "#0000FF" },
+      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 50, label: "Medium", color: "#FFA500" },
+      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 200, label: "High", color: "#0000FF" },
     ],
   };
 
   const arcsK = {
     // Define arcs for Potassium gauge (similar to arcsN)
+    subArcs: [
+      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 50, label: "Medium", color: "#FFA500" },
+      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 200, label: "High", color: "#0000FF" },
+    ],
   };
 
   const arcsP = {
     // Define arcs for Phosphorus gauge (similar to arcsN)
+    subArcs: [
+      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 50, label: "Medium", color: "#FFA500" },
+      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 200, label: "High", color: "#0000FF" },
+    ],
   };
 
   return (
@@ -110,11 +122,21 @@ function App() {
         </div>
         <div className='gaugeContainer'>
           <h4>Potassium</h4>
-          <GaugeComponent />
+          <GaugeComponent 
+            minValue={0}
+            maxValue={200} // Adjust based on your data range
+            value={data?.K || 90} // Use data?.N or a default value
+            arc={arcsK}
+          />
         </div>
         <div className='gaugeContainer'>
           <h4>Phosphorus</h4>
-          <GaugeComponent />
+          <GaugeComponent 
+            minValue={0}
+            maxValue={200} // Adjust based on your data range
+            value={data?.P || 90} // Use data?.N or a default value
+            arc={arcsP}
+          />
         </div>
       </div>
 
