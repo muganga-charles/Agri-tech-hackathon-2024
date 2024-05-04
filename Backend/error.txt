@@ -1,0 +1,116 @@
+ERROR:    Traceback (most recent call last):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\streams\tls.py", line 131, in _call_sslobject_method
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\ssl.py", line 859, in read
+    v = self._sslobj.read(len)
+        ^^^^^^^^^^^^^^^^^^^^^^
+ssl.SSLWantReadError: The operation did not complete (read) (_ssl.c:2559)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_backends\anyio.py", line 34, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\streams\tls.py", line 196, in receive
+    data = await self._call_sslobject_method(self._ssl_object.read, max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\streams\tls.py", line 138, in _call_sslobject_method
+    data = await self.transport_stream.receive()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1203, in receive
+    await self._protocol.read_event.wait()
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\asyncio\locks.py", line 212, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_exceptions.py", line 10, in map_exceptions
+    yield
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_backends\anyio.py", line 32, in read
+    with anyio.fail_after(timeout):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_core\_tasks.py", line 119, in __exit__
+    raise TimeoutError
+TimeoutError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_transports\default.py", line 67, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_transports\default.py", line 371, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\connection_pool.py", line 268, in handle_async_request
+    raise exc
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\connection_pool.py", line 251, in handle_async_request
+    response = await connection.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\http11.py", line 133, in handle_async_request
+    raise exc
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\http11.py", line 111, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\http11.py", line 176, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_async\http11.py", line 212, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_backends\anyio.py", line 31, in read
+    with map_exceptions(exc_map):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 155, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 677, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 569, in __aexit__
+    await self._router.shutdown()
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 664, in shutdown
+    await handler()
+  File "d:\Github\Charles\Wiso project\React UI\Backend\main.py", line 42, in shutdown_event
+    await app_lifespan.shutdown()
+  File "d:\Github\Charles\Wiso project\React UI\Backend\main.py", line 30, in shutdown 
+    await self.background_task
+  File "d:\Github\Charles\Wiso project\React UI\Backend\Controllers\sensor_data_controllers.py", line 25, in start_device_data_collection
+    await fetch_and_store_device_data(device["device_id"], device["longitude_url"], device["latitude_url"])
+  File "d:\Github\Charles\Wiso project\React UI\Backend\Controllers\sensor_data_controllers.py", line 32, in fetch_and_store_device_data
+    latitude_response = await client.get(latitude_url)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1786, in get
+    return await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1559, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)      
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^      
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1646, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1674, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1711, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_client.py", line 1748, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_transports\default.py", line 370, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 155, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\Hello\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_transports\default.py", line 84, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout
