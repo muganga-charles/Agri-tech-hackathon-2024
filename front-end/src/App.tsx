@@ -25,7 +25,7 @@ function App() {
       setError(null);
 
       try {
-        const response = await fetch('https://your-server.com/api/data');
+        const response = await fetch('http://127.0.0.1:8000/data/soil_data');
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -40,9 +40,9 @@ function App() {
       }
     };
 
-    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
+    const interval = setInterval(fetchData, 5000); 
 
-    return () => clearInterval(interval); // Cleanup function to clear interval
+    return () => clearInterval(interval); 
 
   }, []);
 

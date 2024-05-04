@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Depends
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
-# from Controllers.sensor_data_controllers import start_device_data_collection
+from Controllers.sensor_data_controllers import start_device_data_collection
 
 from Routes import (
     admin_data_routes,
@@ -45,6 +45,7 @@ app.add_middleware(
 # @app.get("/")
 # async def read_root(lifespan: AppLifespan = Depends()):
 #     return {"Hello": "World"}
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}

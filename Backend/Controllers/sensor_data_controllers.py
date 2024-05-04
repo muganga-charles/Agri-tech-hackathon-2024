@@ -14,19 +14,30 @@ async def fetch_latitude():
         response = await client.get('https://blynk.cloud/external/api/get?token=_wIJrhc9PmbhZcGZaqlh469aTc2k_ESq&dataStreamId=2')
         return float(response.text)
     
+# async def start_device_data_collection():
+#     device_config = [
+#         {"device_id": "nodeMCU", "longitude_url": "https://blynk.cloud/external/api/get?token=_wIJrhc9PmbhZcGZaqlh469aTc2k_ESq&dataStreamId=1", "latitude_url": "https://blynk.cloud/external/api/get?token=_wIJrhc9PmbhZcGZaqlh469aTc2k_ESq&dataStreamId=2"},
+#         {"device_id": "esp32", "longitude_url": "https://blynk.cloud/external/api/get?token=ctzGG4ReH04OwRoadMu9Mg_hLmT0J1Q6&dataStreamId=2", "latitude_url": "https://blynk.cloud/external/api/get?token=ctzGG4ReH04OwRoadMu9Mg_hLmT0J1Q6&dataStreamId=1"},
+#         # Add more devices as needed
+#     ]
+
+#     while True:
+#         for device in device_config:
+#             await fetch_and_store_device_data(device["device_id"], device["longitude_url"], device["latitude_url"])
+        
+#         await asyncio.sleep(30) 
+
 async def start_device_data_collection():
     device_config = [
-        {"device_id": "nodeMCU", "longitude_url": "https://blynk.cloud/external/api/get?token=_wIJrhc9PmbhZcGZaqlh469aTc2k_ESq&dataStreamId=1", "latitude_url": "https://blynk.cloud/external/api/get?token=_wIJrhc9PmbhZcGZaqlh469aTc2k_ESq&dataStreamId=2"},
-        {"device_id": "esp32", "longitude_url": "https://blynk.cloud/external/api/get?token=ctzGG4ReH04OwRoadMu9Mg_hLmT0J1Q6&dataStreamId=2", "latitude_url": "https://blynk.cloud/external/api/get?token=ctzGG4ReH04OwRoadMu9Mg_hLmT0J1Q6&dataStreamId=1"},
-        # Add more devices as needed
+        {"nitrogen_url": "https://blynk.cloud/external/api/get?token=KhuvuCrygGyPHl_ArKvlKeKxBRSS-39X&dataStreamId=2", "potassium_url": "https://blynk.cloud/external/api/get?token=KhuvuCrygGyPHl_ArKvlKeKxBRSS-39X&dataStreamId=1",
+         "phosphorous_url": "https://blynk.cloud/external/api/get?token=KhuvuCrygGyPHl_ArKvlKeKxBRSS-39X&dataStreamId=4", "pH": "https://blynk.cloud/external/api/get?token=KhuvuCrygGyPHl_ArKvlKeKxBRSS-39X&dataStreamId=3"},
     ]
 
     while True:
         for device in device_config:
-            await fetch_and_store_device_data(device["device_id"], device["longitude_url"], device["latitude_url"])
-        
-        await asyncio.sleep(30) 
-
+            data = await fetch_and_store_device_data(device["nitrogen_url"], device["phosphorous_url"], device["potassium_url"], device["pH"])
+        return data
+        # await asyncio.sleep(30) 
 async def add_sensor_data_controller(sensor_data):
     try:
         SensorData.add_sensor_data(session,sensor_data["Nitrogen"],sensor_data["Phosphorus"], sensor_data["Potassium"])
@@ -38,22 +49,35 @@ async def get_prediction(sensor_data):
     try:
         result = SensorData.get_predictions(sensor_data["Nitrogen"], sensor_data["Phosphorus"], sensor_data["Potassium"], 6.5)
         predicted_crop = result['predicted_crop'].tolist()
-        print(predicted_crop)
+        # print(predicted_crop)
         return {"status": "success", "predicted_crop": predicted_crop, "message": "Crop retrieved successfully"}
     except Exception as e:
         print(f"Error occurred: {e}")
         return {"status": "error", "message": str(e)}
 
-        
-async def fetch_and_store_device_data(device_id, longitude_url, latitude_url):
+async def fetch_and_store_device_data(nitrogen, phosphorous, potassium, pH):
     async with httpx.AsyncClient() as client:
-        longitude_response = await client.get(longitude_url)
-        latitude_response = await client.get(latitude_url)
+        nitrogen_response = await client.get(nitrogen)
+        phosphorous_response = await client.get(phosphorous)
+        potassium_response = await client.get(potassium)
+        pH_response = await client.get(pH)
 
-        longitude = float(longitude_response.text)
-        latitude = float(latitude_response.text)
+        N = float(nitrogen_response.text)
+        K = float(potassium_response.text)
+        P = float(phosphorous_response.text)
+        ph = float(pH_response.text)
 
-        await add_sensor_data(device_id, longitude, latitude)
+        return {"N" : N, "K" : K, "P" : P, "pH" : ph}
+        
+# async def fetch_and_store_device_data(device_id, longitude_url, latitude_url):
+#     async with httpx.AsyncClient() as client:
+#         longitude_response = await client.get(longitude_url)
+#         latitude_response = await client.get(latitude_url)
+
+#         longitude = float(longitude_response.text)
+#         latitude = float(latitude_response.text)
+
+#         await add_sensor_data(device_id, longitude, latitude)
 
 async def add_sensor_data(device_id, longitude, latitude):
     db = session

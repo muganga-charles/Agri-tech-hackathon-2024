@@ -7,6 +7,7 @@ from Controllers.sensor_data_controllers import (
     get_unique_device_ids,
     add_sensor_data_controller,
     add_text_from_sensor,
+    start_device_data_collection,
     get_prediction
 ) 
 router = APIRouter()
@@ -58,3 +59,8 @@ async def add_test_route(text_object:dict,db: Session = Depends(get_db)):
     text = text_object['message']
     sent_text = await add_text_from_sensor(db, text)
     return {"status": "success", "message": "Data added successfully"}
+
+@router.get('/soil_data')
+async def get_soil_data():
+    return await start_device_data_collection()
+     
