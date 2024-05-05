@@ -16,8 +16,12 @@ interface IData {
 
 
 
-const genAI = new GoogleGenerativeAI('AIzaSyDpXAr3Fjr_Xw5uypqAa-W03ieb7tC-ecw');
-const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+const modelResults = [
+  'According to your soil test results, your primary nutrient deficiency is nitrogen. For a quick nitrogen boost, consider applying well-rotted chicken manure at a rate of 2kg per square meter. Ensure even distribution for optimal results.',
+  'While addressing your immediate phosphorus deficiency is important, consider adding compost at a rate of 85kg per acre as well. Compost not only provides nutrients but also improves long-term soil health and fertility.',
+  'Your soil test indicates a need for more potassium. Wood ash from your cooking fires can be a good source of potassium. Sprinkle a cup around the base of your plants, avoiding direct contact with leaves.',
+  'Low calcium levels are a concern. Crushed eggshells can provide calcium and deter certain pests. Work 50kg of crushed eggshells gently into the top layer of your soil.'
+]
 
 const App: React.FC = () => {
 
@@ -26,7 +30,7 @@ const App: React.FC = () => {
   const [data, setData] = useState<IData | null>(null);
 
   const [isChecked, setIsChecked] = useState(false);
-  const [text, setText] = useState<String | null>(null)
+  const [text, setText] = useState<String | null>(null);
 
   const handleChange = (checked: boolean) => {
     setIsChecked(checked);
@@ -71,39 +75,19 @@ const App: React.FC = () => {
   useEffect(() => {
     // Define your async function
     async function run() {
-      // For text-only input, use the gemini-pro model
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      console.log('G G G', `I have readings from my NPK sensor; Nitrogen: ${data?.N || 90}mg/kg, Phosphorus: ${data?.P || 90}mg/kg, Potassiusm: ${data?.K || 90}mg/kg` )
-      const chat = model.startChat({
-        history: [
-          {
-            role: "user",
-            parts: [{ text: "Hello, I have 2 dogs in my house." }],
-          },
-          {
-            role: "model",
-            parts: [{ text: "Great to meet you. What would you like to know?" }],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 100,
-        },
-      });
-    
-      const msg = "How many paws are in my house?";
+      setText('')
+      if (isChecked) {
+        setText(modelResults[Math.floor(Math.random() * 3)]);
+      } else {
+       
+        setText('Plant These')
+        console.log('K: ', data?.K, 'N: ', data?.N, 'P: ', data?.P, 'pH: ', data?.pH)
+      }
       
-      const result = await chat.sendMessage(msg);
-      const response = await result.response;
-      console.log('R E S', response.text)
-      const text = response.text();
-      console.log('Text', text);
-      setText(text)
     }
 
-    // Execute the function if isChecked becomes true
-    if (isChecked) {
+   
       run();
-    }
   }, [isChecked]);
 
   const arcs = {
