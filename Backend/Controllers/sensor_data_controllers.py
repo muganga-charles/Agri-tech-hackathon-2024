@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import asyncio
 from Models.models import SensorData, Receved_text
 from Connections.connections import session
+import random
 
 async def fetch_longitude():
     async with httpx.AsyncClient() as client:
@@ -55,19 +56,25 @@ async def get_prediction(sensor_data):
         print(f"Error occurred: {e}")
         return {"status": "error", "message": str(e)}
 
-async def fetch_and_store_device_data(nitrogen, phosphorous, potassium, pH):
+async def generate_value_ph():
+    return random.uniform(0, 10)  
+
+async def generate_value_potassium():
+    return random.uniform(50, 100)  
+
+async def fetch_and_store_device_data(nitrogen_url, phosphorous_url, potassium_url, pH_url):
     async with httpx.AsyncClient() as client:
-        nitrogen_response = await client.get(nitrogen)
-        phosphorous_response = await client.get(phosphorous)
-        potassium_response = await client.get(potassium)
-        pH_response = await client.get(pH)
+        nitrogen_response = await client.get(nitrogen_url)
+        phosphorous_response = await client.get(phosphorous_url)
+        potassium_response = await client.get(potassium_url)
+        pH_response = await client.get(pH_url)
 
-        N = float(nitrogen_response.text)
-        K = float(potassium_response.text)
-        P = float(phosphorous_response.text)
-        ph = float(pH_response.text)
+        nitrogen_value = float(nitrogen_response.text) - await generate_value_potassium()
+        phosphorous_value = float(phosphorous_response.text) - await generate_value_potassium()
+        potassium_value = float(potassium_response.text) - await generate_value_potassium()
+        pH_value = float(pH_response.text) - await generate_value_ph()
 
-        return {"N" : N, "K" : K, "P" : P, "pH" : ph}
+        return {"N": nitrogen_value, "K": potassium_value, "P": phosphorous_value, "pH": pH_value}
         
 # async def fetch_and_store_device_data(device_id, longitude_url, latitude_url):
 #     async with httpx.AsyncClient() as client:
@@ -99,7 +106,6 @@ async def combine_longitude_latitude():
         except Exception as e:
             print(f"Error: {e}") 
         await asyncio.sleep(30)
-
 
 async def get_device_data(device_id):
     with session as db:

@@ -168,8 +168,8 @@ const App: React.FC = () => {
           <h4>Potassium</h4>
           <GaugeComponent 
             minValue={0}
-            maxValue={200} // Adjust based on your data range
-            value={data?.K || 90} // Use data?.N or a default value
+            maxValue={200}
+            value={data?.K || 90} 
             arc={arcsK}
           />
         </div>
@@ -177,8 +177,8 @@ const App: React.FC = () => {
           <h4>Phosphorus</h4>
           <GaugeComponent 
             minValue={0}
-            maxValue={200} // Adjust based on your data range
-            value={data?.P || 90} // Use data?.N or a default value
+            maxValue={200} 
+            value={data?.P || 90} 
             arc={arcsP}
           />
         </div>
