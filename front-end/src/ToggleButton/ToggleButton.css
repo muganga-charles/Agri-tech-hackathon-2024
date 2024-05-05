@@ -1,0 +1,29 @@
+.toggle-button {
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .toggle-button-slider {
+    width: 28px;
+    height: 28px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: transform 0.3s ease;
+  }
+  
+  .toggle-button.checked {
+    background-color: #4CAF50;
+  }
+  
+  .toggle-button.checked .toggle-button-slider {
+    transform: translateX(30px);
+  }
+  

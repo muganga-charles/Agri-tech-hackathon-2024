@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .gaugeContainer {
@@ -25,14 +26,13 @@
 
 .predict {
   display: flex; /* Use flexbox */
-  justify-content: center; /* Center content horizontally */
   flex-direction: column;
-  height: 350px;
+  height: 80px;
   flex: 1;
-  background-color: azure;
   margin-left: 10px;
   margin-right: 10px;
   border-radius: 20px;
+  align-items: center;
 }
 
 .predict button {
@@ -60,4 +60,35 @@
   display: flex;
   background-color: yellow;
   flex: 1;
+  height: 250px;
+  margin-left: 60px;
+  margin-right: 60px;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.choosePredict {
+  display: flex;
+  flex-direction: 'row';
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+}
+
+.choosePredict > p {
+  margin: 10px;
+}
+
+.imageContainer {
+  height: inherit;
+}
+
+.imageContainer > img {
+  height: 250px;
+  width: 350px;
+  border-radius: 30px;
+}
+
+.requirements {
+  margin-left: 20px;
 }

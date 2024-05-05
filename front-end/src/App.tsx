@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import GaugeComponent from 'react-gauge-component';
 import './App.css'; // Import your CSS file
+import {ToggleSwitch} from 'reactjs-toggleswitch';
+import manure from './images/manure.jpg'
+import crops from './images/crops.jpg'
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface IData {
   N: number; // Nitrogen
@@ -9,10 +14,25 @@ interface IData {
   pH: number; // Acidity
 }
 
-function App() {
+
+
+const genAI = new GoogleGenerativeAI('AIzaSyDpXAr3Fjr_Xw5uypqAa-W03ieb7tC-ecw');
+const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+
+const App: React.FC = () => {
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<IData | null>(null);
+
+  const [isChecked, setIsChecked] = useState(false);
+  const [text, setText] = useState<String | null>(null)
+
+  const handleChange = (checked: boolean) => {
+    setIsChecked(checked);
+  };
+
+  
 
   // Update gauge values upon successful data fetch
   const updateGaugeValues = (fetchedData: IData) => {
@@ -46,6 +66,46 @@ function App() {
 
   }, []);
 
+
+
+  useEffect(() => {
+    // Define your async function
+    async function run() {
+      // For text-only input, use the gemini-pro model
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      console.log('G G G', `I have readings from my NPK sensor; Nitrogen: ${data?.N || 90}mg/kg, Phosphorus: ${data?.P || 90}mg/kg, Potassiusm: ${data?.K || 90}mg/kg` )
+      const chat = model.startChat({
+        history: [
+          {
+            role: "user",
+            parts: [{ text: "Hello, I have 2 dogs in my house." }],
+          },
+          {
+            role: "model",
+            parts: [{ text: "Great to meet you. What would you like to know?" }],
+          },
+        ],
+        generationConfig: {
+          maxOutputTokens: 100,
+        },
+      });
+    
+      const msg = "How many paws are in my house?";
+      
+      const result = await chat.sendMessage(msg);
+      const response = await result.response;
+      console.log('R E S', response.text)
+      const text = response.text();
+      console.log('Text', text);
+      setText(text)
+    }
+
+    // Execute the function if isChecked becomes true
+    if (isChecked) {
+      run();
+    }
+  }, [isChecked]);
+
   const arcs = {
     subArcs: [
       { limit: 3, label: "High acidity", color: "#FF0000" },
@@ -58,9 +118,9 @@ function App() {
 
   const arcsN = {
     subArcs: [
-      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
-      { limit: 50, label: "Medium", color: "#FFA500" },
-      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 40, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 90, label: "Medium", color: "#FFA500" },
+      { limit: 170, label: "Optimal", color: "#00FF00" },
       { limit: 200, label: "High", color: "#0000FF" },
     ],
   };
@@ -68,9 +128,9 @@ function App() {
   const arcsK = {
     // Define arcs for Potassium gauge (similar to arcsN)
     subArcs: [
-      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 20, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
       { limit: 50, label: "Medium", color: "#FFA500" },
-      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 150, label: "Optimal", color: "#00FF00" },
       { limit: 200, label: "High", color: "#0000FF" },
     ],
   };
@@ -78,9 +138,9 @@ function App() {
   const arcsP = {
     // Define arcs for Phosphorus gauge (similar to arcsN)
     subArcs: [
-      { limit: 10, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
-      { limit: 50, label: "Medium", color: "#FFA500" },
-      { limit: 100, label: "Optimal", color: "#00FF00" },
+      { limit: 40, label: "Low", color: "#FF0000" }, // Adjust labels and limits based on your data
+      { limit: 90, label: "Medium", color: "#FFA500" },
+      { limit: 140, label: "Optimal", color: "#00FF00" },
       { limit: 200, label: "High", color: "#0000FF" },
     ],
   };
@@ -88,7 +148,7 @@ function App() {
   return (
     <div className="App">
       <div className="title">
-        <h5>Soil Monitor</h5>
+        <h5>SoilTech</h5>
       </div>
       <div className="gauges">
         <div className="gaugeContainer">
@@ -141,9 +201,22 @@ function App() {
       </div>
 
       <div className='predict'>
-        <button>Generate Prediction</button>
-        <div className='prediction'>
-          <p>james</p>
+        <div className='choosePredict'>
+          <p>Crop Prediction</p>
+          <ToggleSwitch checked={isChecked} onToggle={handleChange} />
+          <p>Soil Prediction</p>
+        </div>
+      </div>
+
+      <div className='prediction'>
+        <div className='imageContainer'>
+          <img alt='foods' src={isChecked ? manure: crops}/>
+        </div>
+        <div className='requirements'>
+          <h3>{isChecked ? 'Soil Requirements' : 'Possible Crops'}</h3>
+          <div>
+            <p>{text}</p>
+          </div>
         </div>
       </div>
     </div>
